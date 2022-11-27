@@ -1,0 +1,18 @@
+.nav_item {
+  cursor: pointer;
+  padding: 8px;
+  transition: 400ms;
+  border-radius: 8px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav_item:hover {
+  background-color: var(--chakra-colors-gray-700);
+}
+
+.chakra-ui-light .nav_item:hover {
+  background-color: var(--chakra-colors-gray-100) !important;
+}
