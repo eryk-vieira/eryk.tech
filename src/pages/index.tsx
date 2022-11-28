@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <Container>
       <Box w={'100%'}>
-        <Flex align={'center'} gap="12" mb={16} flexDir={{ sm: 'column', md: 'row' }}>
+        <Flex align={'center'} gap="12" mb={16} flexDir={{ base: 'column', sm: 'column', md: 'row' }}>
           <Avatar src='https://avatars.githubusercontent.com/u/59400564?v=4' size={'xl'} />
           <Box>
             <Heading as="h1">Eryk Luiz Vieira</Heading>
