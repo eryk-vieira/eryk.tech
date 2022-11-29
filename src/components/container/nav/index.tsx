@@ -32,14 +32,14 @@ export function Nav() {
             body={
               <>
                 <Stack>
-                  <Box className={styles.nav_item} _hover={{ bgColor }}>
+                  <Box color={'gray.700'} className={styles.nav_item} _hover={{ bgColor }}>
                     <Text fontWeight={'bold'}>Home</Text>
                   </Box>
-                  <Box className={styles.nav_item} _hover={{ bgColor }}>
+                  <Box color={'gray.700'} className={styles.nav_item} _hover={{ bgColor }}>
                     <Text>Blog</Text>
                     <Badge fontSize={9} colorScheme={'orange'}>Soon</Badge>
                   </Box>
-                  <Box className={styles.nav_item} _hover={{ bgColor }}>
+                  <Box color={'gray.700'} className={styles.nav_item} _hover={{ bgColor }}>
                     <Text>Snippets</Text>
                     <Badge fontSize={9} colorScheme={'red'}>Soon</Badge>
                   </Box>

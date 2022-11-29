@@ -1,6 +1,7 @@
 import { Box, Text, Flex, Heading, useColorMode, Avatar, Img, Badge, Link, Card, CardHeader, CardBody, useBreakpointValue } from '@chakra-ui/react'
 import { useCallback } from 'react';
 import { Container } from '../components/container';
+import AvatarImage from '../assets/avatar/avatar.png';
 
 export default function Home() {
   const { colorMode } = useColorMode();
@@ -13,7 +14,7 @@ export default function Home() {
     <Container>
       <Box w={'100%'}>
         <Flex align={'center'} gap="12" mb={16} flexDir={{ base: 'column', sm: 'column', md: 'row' }}>
-          <Avatar src='https://avatars.githubusercontent.com/u/59400564?v=4' size={'xl'} />
+          <Avatar src={AvatarImage.src} size={'xl'} />
           <Box>
             <Heading as="h1">Eryk Luiz Vieira</Heading>
             <Text colorScheme={'gray'}>Co-founder and Software engineer at <Badge onClick={ecsaRedirect} cursor={'pointer'}>ECSA Finance</Badge></Text>
