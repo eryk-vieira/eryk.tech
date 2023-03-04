@@ -7,7 +7,7 @@ export default function Home() {
   const { colorMode } = useColorMode();
 
   const ecsaRedirect = useCallback(() => {
-    window.open('https://kapstar.com.br', '_blank')
+    window.open('https://ecsa.finance', '_blank')
   }, [])
 
   return (
