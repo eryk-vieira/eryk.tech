@@ -1,5 +1,4 @@
-import { Button, Drawer as ChakraDrawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, useDisclosure } from "@chakra-ui/react"
-import { jsx } from "@emotion/react";
+import { Drawer as ChakraDrawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, useDisclosure } from "@chakra-ui/react"
 import React from "react"
 
 type DrawerType = {
