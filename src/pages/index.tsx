@@ -1,4 +1,4 @@
-import { Box, Text, Flex, Heading, useColorMode, Avatar, Img, Badge, Link, Card, CardHeader, CardBody, useBreakpointValue } from '@chakra-ui/react'
+import { Box, Text, Flex, Heading, useColorMode, Avatar, Img, Badge, Card, CardHeader, CardBody } from '@chakra-ui/react'
 import { useCallback } from 'react';
 import { Container } from '../components/container';
 import AvatarImage from '../assets/avatar/avatar.png';
