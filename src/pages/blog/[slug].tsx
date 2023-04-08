@@ -4,8 +4,9 @@ import Image from 'next/image'
 import { NotionAPI } from 'notion-client';
 import { NotionRenderer } from 'react-notion-x';
 import dynamic from 'next/dynamic'
-import { useColorModeValue } from '@chakra-ui/react';
+import { Box, SkeletonCircle, SkeletonText, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import { Client } from '@notionhq/client';
+import { useRouter } from 'next/router'
 
 const Code = dynamic(() =>
   import('react-notion-x/build/third-party/code').then((m) => m.Code),
@@ -35,10 +36,9 @@ export async function getStaticPaths() {
     }
   })
 
-
   return {
     paths: paths,
-    fallback: false, // can also be true or 'blocking'
+    fallback: true, // can also be true or 'blocking'
   }
 }
 
@@ -50,10 +50,21 @@ export const getStaticProps: GetServerSideProps = async (context) => {
 
   const page = await notion.getPage(slug, { fetchCollections: false })
 
-  return { props: { page: page } }
+  return { props: { page: page }, revalidate: 120 }
 }
 
 export default function Slug({ page }: any) {
+  const router = useRouter()
+  const colorMode = useColorMode()
+
+  if (router.isFallback) {
+    return <Container>
+      <Box padding='6' boxShadow='lg'>
+        <SkeletonCircle size='10' />
+        <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
+      </Box>
+    </Container>
+  }
 
   return (
     <Container>
@@ -61,7 +72,7 @@ export default function Slug({ page }: any) {
         isLinkCollectionToUrlProperty={false}
         components={{ Code, nextImage: Image, Collection: () => { } }}
         recordMap={page}
-        darkMode={useColorModeValue(false, true)}
+        darkMode={colorMode.colorMode === 'light' ? false : true}
         disableHeader
         fullPage
         className='notion-renderer-custom'

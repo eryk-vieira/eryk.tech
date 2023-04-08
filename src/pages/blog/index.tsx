@@ -1,3 +1,4 @@
+import { Stack } from '@chakra-ui/react';
 import { Client } from '@notionhq/client'
 import { ArticleCard } from '../../components/article-card';
 import { Container } from '../../components/container'
@@ -49,17 +50,19 @@ export async function getStaticProps() {
     }
   })
 
-  return { props: { articles }, revalidate: 60 * 5 }
+  return { props: { articles }, revalidate: 60 }
 }
 
 export default function Blog({ articles }: { articles: Array<Article> }) {
   return (
     <Container>
-      {articles.map(article => {
-        return (
-          <ArticleCard key={article.id} {...article} />
-        )
-      })}
+      <Stack gap={4}>
+        {articles.map(article => {
+          return (
+            <ArticleCard key={article.id} {...article} />
+          )
+        })}
+      </Stack>
     </Container>
   )
 }
