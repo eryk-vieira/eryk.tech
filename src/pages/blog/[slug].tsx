@@ -50,7 +50,7 @@ export const getStaticProps: GetServerSideProps = async (context) => {
 
   const page = await notion.getPage(slug, { fetchCollections: false })
 
-  return { props: { page: page }, revalidate: 60 * 50 }
+  return { props: { page: page }, revalidate: 30 }
 }
 
 export default function Slug({ page }: any) {
