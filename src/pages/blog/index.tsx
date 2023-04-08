@@ -50,7 +50,7 @@ export async function getStaticProps() {
     }
   })
 
-  return { props: { articles }, revalidate: 60 }
+  return { props: { articles }, revalidate: 30 }
 }
 
 export default function Blog({ articles }: { articles: Array<Article> }) {

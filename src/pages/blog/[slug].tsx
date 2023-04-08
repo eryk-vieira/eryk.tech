@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { NotionAPI } from 'notion-client';
 import { NotionRenderer } from 'react-notion-x';
 import dynamic from 'next/dynamic'
-import { Box, SkeletonCircle, SkeletonText, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import { Box, SkeletonCircle, SkeletonText, useColorMode } from '@chakra-ui/react';
 import { Client } from '@notionhq/client';
 import { useRouter } from 'next/router'
 
@@ -50,7 +50,7 @@ export const getStaticProps: GetServerSideProps = async (context) => {
 
   const page = await notion.getPage(slug, { fetchCollections: false })
 
-  return { props: { page: page }, revalidate: 120 }
+  return { props: { page: page }, revalidate: 60 * 50 }
 }
 
 export default function Slug({ page }: any) {
@@ -76,6 +76,7 @@ export default function Slug({ page }: any) {
         disableHeader
         fullPage
         className='notion-renderer-custom'
+        rootDomain='https://eryk.tech/blog'
       />
     </Container>
   )

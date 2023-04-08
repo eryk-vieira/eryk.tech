@@ -8,7 +8,7 @@ export function ArticleCard({ id, title, created_at, description, banner }: Arti
 
 
   return (
-    <Link href={`/blog/${id}`}>
+    <Link href={`/blog/${id}`} prefetch={false}>
       <Card
         direction={{ base: 'column', sm: 'row' }}
         overflow='hidden'
