@@ -1,0 +1,8 @@
+.notion-renderer-custom {
+  background-color: transparent !important;
+}
+
+.notion-renderer-custom main {
+  padding-left: 0;
+  padding-right: 0;
+}

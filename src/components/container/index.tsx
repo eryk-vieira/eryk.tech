@@ -17,7 +17,7 @@ export function Container({ children }: ContainerProps) {
         <link rel="shortcut icon" href="https://ui-avatars.com/api/?name=Eryk+Vieira&background=1a202c&color=fff" />
       </Head>
 
-      <Flex flexDir={'column'} maxW="700" justify={'center'} margin={'0 auto'} pl={12} pr={12}>
+      <Flex flexDir={'column'} maxW="850" justify={'center'} margin={'0 auto'} pl={12} pr={12}>
         <Flex as={'header'} w="100%" justifyItems={'center'}>
           <Nav />
         </Flex>
