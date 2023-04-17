@@ -7,7 +7,7 @@
     width: 1000vw;
     height: 1000vh;
     content: "";
-    opacity: .04;
+    opacity: .02;
     z-index: 1000;
     pointer-events: none;
     background: url('../../assets/noise.webp');
