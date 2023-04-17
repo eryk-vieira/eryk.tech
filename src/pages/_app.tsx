@@ -9,6 +9,7 @@ import 'react-notion-x/src/styles.css'
 // used for code syntax highlighting (optional)
 import 'prismjs/themes/prism-tomorrow.css'
 import './global.css'
+import { NoiseBackground } from '../components/noise-background';
 
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -22,6 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <ColorModeProvider>
         <NextNProgress options={{ easing: 'ease' }} color={'var(--chakra-colors-orange-200)'} />
         <Component {...pageProps} />
+        <NoiseBackground />
       </ColorModeProvider>
     </ChakraProvider>
   )

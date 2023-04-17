@@ -1,12 +1,11 @@
 import { Container } from '../../components/container';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image'
-import { NotionAPI } from 'notion-client';
 import { NotionRenderer } from 'react-notion-x';
 import dynamic from 'next/dynamic'
 import { Box, SkeletonCircle, SkeletonText, useColorMode } from '@chakra-ui/react';
-import { Client } from '@notionhq/client';
 import { useRouter } from 'next/router'
+import { getArticlePage, getArticles } from '../../services/articles';
 
 const Code = dynamic(() =>
   import('react-notion-x/build/third-party/code').then((m) => m.Code),
@@ -14,27 +13,16 @@ const Code = dynamic(() =>
 )
 
 export async function getStaticPaths() {
-  const notion_secret = process.env.NOTION_SECRET
-  const notion = new Client({ auth: notion_secret });
+  const articles = await getArticles()
 
-  const { results } = await notion.databases.query({
-    database_id: '4b68f1e1b1f2446ebe2c8c7ea781108e', filter: {
-      or: [
-        {
-          property: 'Status',
-          select: {
-            equals: 'PUBLISHED',
-          }
-        }
-      ]
-    }
-  })
+  const paths = articles.map(article => {
 
-  const paths = results.map(r => {
     return {
-      params: { slug: r.id }
+      params: { slug: article.page.id }
     }
   })
+
+  console.log(paths)
 
   return {
     paths: paths,
@@ -42,18 +30,16 @@ export async function getStaticPaths() {
   }
 }
 
-
 export const getStaticProps: GetServerSideProps = async (context) => {
   const { slug }: any = context.params
 
-  const notion = new NotionAPI({ authToken: process.env.NOTION_TOKEN_V2, activeUser: process.env.NOTION_USER_ID })
+  const { page, engPage } = await getArticlePage(slug)
 
-  const page = await notion.getPage(slug, { fetchCollections: false })
 
-  return { props: { page: page }, revalidate: 30 }
+  return { props: { page: page, englishPage: engPage }, revalidate: 30 }
 }
 
-export default function Slug({ page }: any) {
+export default function Slug({ page, englishPage }: any) {
   const router = useRouter()
   const colorMode = useColorMode()
 
