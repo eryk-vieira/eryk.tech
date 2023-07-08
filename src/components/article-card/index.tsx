@@ -8,7 +8,6 @@ type Article = {
   description: string;
   banner?: string;
   created_at: string;
-
 }
 
 export function ArticleCard({ id, title, created_at, description, banner }: Article) {

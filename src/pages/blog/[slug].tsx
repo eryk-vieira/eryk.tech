@@ -31,15 +31,20 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps: GetServerSideProps = async (context) => {
-  const { slug }: any = context.params
+  try {
+    const { slug }: any = context.params
 
-  const { page, engPage } = await getArticlePage(slug)
+    const { page, engPage } = await getArticlePage(slug)
 
 
-  return { props: { page: page, englishPage: engPage }, revalidate: 30 }
+    return { props: { page: page, englishPage: engPage }, revalidate: 30 }
+
+  } catch (err) {
+    return { notFound: true }
+  }
 }
 
-export default function Slug({ page, englishPage }: any) {
+export default function Slug({ page }: any) {
   const router = useRouter()
   const colorMode = useColorMode()
 
@@ -52,6 +57,10 @@ export default function Slug({ page, englishPage }: any) {
     </Container>
   }
 
+  if (!page) {
+    return <h1>Page not found</h1>
+  }
+
   return (
     <Container>
       <NotionRenderer
@@ -59,6 +68,7 @@ export default function Slug({ page, englishPage }: any) {
         components={{ Code, nextImage: Image, Collection: () => { } }}
         recordMap={page}
         darkMode={colorMode.colorMode === 'light' ? false : true}
+        // pageCover={<img src={page.banner}></img>}
         disableHeader
         fullPage
         className='notion-renderer-custom'

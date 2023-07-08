@@ -21,6 +21,9 @@ type NotionObject = {
         plain_text: string;
       }>
     },
+    Banner: {
+      files: Array<any>
+    }
   }
 }
 
@@ -47,18 +50,22 @@ export async function getArticles(): Promise<Array<Article>> {
     // @ts-ignore
     const englishPage: NotionObject = await notion.pages.retrieve({ page_id: data.properties.english_version.relation[0]?.id })
 
+    console.log()
+
     return {
       page: {
         id: data.id,
         title: data?.properties.Title.title[0].plain_text,
         description: data.properties.Description.rich_text[0].plain_text,
         created_at: data.created_time,
+        banner: data.properties.Banner.files[0]?.file.url || ""
       },
       englishPage: {
         id: englishPage.id,
         title: englishPage?.properties.Title.title[0].plain_text,
         description: englishPage.properties.Description.rich_text[0].plain_text,
         created_at: englishPage.created_time,
+        banner: data.properties.Banner.files[0]?.file.url || ""
       }
     }
   }))
@@ -81,9 +88,7 @@ export async function getArticlePage(slug: string) {
     }
   }
 
-
   const engPage = await notion.getPage(relation?.id || '', { fetchCollections: false })
-
 
   return {
     page,
