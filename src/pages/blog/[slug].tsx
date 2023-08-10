@@ -69,6 +69,8 @@ export default function Slug({ page }: any) {
         recordMap={page}
         darkMode={colorMode.colorMode === 'light' ? false : true}
         // pageCover={<img src={page.banner}></img>}
+        // showTableOfContents={true}
+        isShowingSearch={true}
         disableHeader
         fullPage
         className='notion-renderer-custom'
