@@ -1,4 +1,4 @@
-baseURL = 'https://eryk-vieira.github.io/eryk.tech/'
+baseURL = 'https://eryk.tech/'
 locale = 'en-us'
 title = 'Eryk Tech'
 theme = 'terminal'
