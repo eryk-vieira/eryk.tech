@@ -31,6 +31,18 @@ body {
 .page-shell > .container.center {
   flex: 1;
   min-height: 0;
+  min-width: 0;
+}
+
+.content,
+.post,
+.post-layout,
+.post-content {
+  min-width: 0;
+}
+
+.post-content > * {
+  max-width: 100%;
 }
 
 .theme-toggle {
