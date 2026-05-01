@@ -24,6 +24,7 @@ removePathAccents = true
 [params]
   CenterTheme = true
   ReadMore = "read more"
+  Toc = true
   showLanguageSelector = true
 
 [module]

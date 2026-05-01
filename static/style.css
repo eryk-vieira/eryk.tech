@@ -8,6 +8,31 @@
   --accent: #555555;
 }
 
+html,
+body {
+  min-height: 100%;
+  overflow-x: clip;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-shell {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.page-shell > .container,
+.page-shell > .container.full,
+.page-shell > .container.center {
+  flex: 1;
+  min-height: 0;
+}
+
 .theme-toggle {
   background: none;
   border: none;
@@ -28,48 +53,6 @@
 .theme-toggle .active {
   color: var(--accent);
   font-weight: bold;
-}
-
-.terminal-path {
-  margin-top: 2.5rem;
-  margin-bottom: 2rem;
-  padding: 0.5rem 0.75rem;
-  border-left: 2px solid var(--accent);
-  font-family: monospace;
-  font-size: 0.95rem;
-  color: color-mix(in srgb, var(--foreground) 75%, transparent);
-  background: color-mix(in srgb, var(--foreground) 4%, transparent);
-}
-
-.terminal-path__user {
-  color: var(--accent);
-  font-weight: bold;
-}
-
-.terminal-path__sep {
-  opacity: 0.6;
-}
-
-.terminal-path__cwd {
-  color: var(--foreground);
-}
-
-.terminal-path__prompt {
-  margin-left: 0.4em;
-  color: var(--accent);
-  font-weight: bold;
-}
-
-.terminal-path__cursor {
-  display: inline-block;
-  margin-left: 0.2em;
-  animation: terminal-blink 1s steps(2, start) infinite;
-}
-
-@keyframes terminal-blink {
-  to {
-    visibility: hidden;
-  }
 }
 
 :root {
@@ -172,4 +155,65 @@ code:not(.chroma code) {
   padding: 0.1em 0.35em;
   border-radius: 3px;
   font-size: 0.92em;
+}
+
+.post-layout--with-toc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.table-of-contents--sidebar {
+  margin: 25px 0 0;
+  position: sticky;
+  top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.table-of-contents--sidebar h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: color-mix(in srgb, var(--foreground) 80%, transparent);
+}
+
+.table-of-contents--sidebar nav {
+  border-left: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  padding-left: 1rem;
+}
+
+.table-of-contents--sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.table-of-contents--sidebar li {
+  margin: 0.45rem 0;
+}
+
+.table-of-contents--sidebar a {
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  text-decoration: none;
+}
+
+.table-of-contents--sidebar a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 980px) {
+  .post-layout--with-toc {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .table-of-contents--sidebar {
+    position: static;
+    margin-top: 0;
+  }
+
+  .table-of-contents--sidebar nav {
+    padding-left: 0.75rem;
+  }
 }

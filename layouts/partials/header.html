@@ -1,4 +1,57 @@
 {{ $menu := $.Site.Data.content.menu }}
+<style>
+  :root {
+    --header-blob-shell-bg: #1a170f;
+    --header-blob-canvas-bg: #0a0a0a;
+  }
+
+  :root[data-theme="light"] {
+    --header-blob-shell-bg: #f5f2ea;
+    --header-blob-canvas-bg: #fafafa;
+  }
+
+  .header-blob {
+    width: 100vw;
+    margin-top: -40px;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    margin-bottom: 1rem;
+    background: var(--header-blob-shell-bg);
+    opacity: 0.6;
+  }
+
+  .header-blob__canvas {
+    display: block;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 2px 0;
+    background: var(--header-blob-canvas-bg);
+    font-family: monospace;
+    font-size: clamp(6px, 0.95vw, 11px);
+    line-height: 1;
+    letter-spacing: 0;
+    white-space: pre;
+    user-select: none;
+    contain: layout paint;
+  }
+
+  @media (max-width: 684px) {
+    .header-blob {
+      margin-top: -20px;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-blob__canvas {
+      padding: 1px 0;
+    }
+  }
+</style>
+
+<section class="header-blob" id="header-blob">
+  <pre id="header-blob-canvas" class="header-blob__canvas" aria-hidden="true"></pre>
+</section>
+
 <header class="header">
   <div class="header__inner">
     <div class="header__logo">
@@ -26,3 +79,129 @@
     {{ partial "menu.html" . }}
   {{ end }}
 </header>
+
+<script>
+  (function () {
+    var root = document.getElementById('header-blob');
+    if (!root) return;
+
+    var canvasEl = root.querySelector('#header-blob-canvas');
+    var H = 3;
+    var SCALE = 13;
+    var RAMP = [' ', '.', ':', '+', '*', '#'];
+    var DARK = ['#111111', '#1d1d1d', '#2d2d2d', '#434343', '#676767', '#8a8a8a'];
+    var LIGHT = ['#f7f7f7', '#ececec', '#dcdcdc', '#c2c2c2', '#9b9b9b', '#707070'];
+    var seed = Math.floor(Math.random() * 9999);
+    var t = 0;
+    var cols = 96;
+    var resizeTimer = 0;
+
+    function getPalette() {
+      return document.documentElement.getAttribute('data-theme') === 'light' ? LIGHT : DARK;
+    }
+
+    function measureColumns() {
+      var probe = document.createElement('span');
+      probe.textContent = '#'.repeat(64);
+      probe.style.visibility = 'hidden';
+      probe.style.position = 'absolute';
+      probe.style.whiteSpace = 'pre';
+      canvasEl.appendChild(probe);
+
+      var charWidth = probe.getBoundingClientRect().width / 64;
+      canvasEl.removeChild(probe);
+
+      if (!charWidth) return cols;
+      return Math.max(1, Math.ceil(canvasEl.clientWidth / charWidth));
+    }
+
+    function syncGrid() {
+      cols = measureColumns();
+    }
+
+    function hash(x, y, localSeed) {
+      var h = x * 374761393 + y * 668265263 + localSeed * 982451653;
+      h = (h ^ (h >>> 13)) * 1274126177;
+      h = h ^ (h >>> 16);
+      return ((h >>> 0) % 100000) / 100000;
+    }
+
+    function smooth(v) {
+      return v * v * (3 - 2 * v);
+    }
+
+    function valueNoise(x, y, localSeed) {
+      var xi = Math.floor(x);
+      var yi = Math.floor(y);
+      var xf = x - xi;
+      var yf = y - yi;
+      var tl = hash(xi, yi, localSeed);
+      var tr = hash(xi + 1, yi, localSeed);
+      var bl = hash(xi, yi + 1, localSeed);
+      var br = hash(xi + 1, yi + 1, localSeed);
+      var u = smooth(xf);
+      var v = smooth(yf);
+      var top = tl + (tr - tl) * u;
+      var bot = bl + (br - bl) * u;
+      return top + (bot - top) * v;
+    }
+
+    function fbm(x, y, time, localSeed) {
+      var n = 0;
+      var amp = 1;
+      var freq = 1;
+      var norm = 0;
+
+      for (var i = 0; i < 3; i++) {
+        n += amp * valueNoise(x * freq + time * 0.3, y * freq - time * 0.2, localSeed + i * 17);
+        norm += amp;
+        amp *= 0.55;
+        freq *= 2.1;
+      }
+
+      return n / norm;
+    }
+
+    function render() {
+      var html = '';
+      var rampLen = RAMP.length;
+      var palette = getPalette();
+
+      for (var y = 0; y < H; y++) {
+        var row = '';
+        var curColor = -1;
+
+        for (var x = 0; x < cols; x++) {
+          var nx = x / SCALE;
+          var ny = (y * 2) / SCALE;
+          var v = fbm(nx, ny, t, seed);
+          var biased = Math.pow(v, 0.85);
+          var idx = Math.min(rampLen - 1, Math.max(0, Math.floor(biased * rampLen)));
+
+          if (idx !== curColor) {
+            if (curColor !== -1) row += '</span>';
+            row += '<span style="color:' + palette[idx] + '">';
+            curColor = idx;
+          }
+
+          row += RAMP[idx];
+        }
+
+        if (curColor !== -1) row += '</span>';
+        html += row + (y < H - 1 ? '\n' : '');
+      }
+
+      canvasEl.innerHTML = html;
+      t += 0.0025;
+      window.requestAnimationFrame(render);
+    }
+
+    window.addEventListener('resize', function () {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(syncGrid, 60);
+    });
+
+    syncGrid();
+    render();
+  })();
+</script>

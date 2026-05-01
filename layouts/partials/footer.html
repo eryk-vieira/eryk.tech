@@ -1,5 +1,53 @@
 {{ $footer := $.Site.Data.content.site.footer }}
 {{ $copyright := replace (or $footer.copyright $.Site.Copyright) "{year}" (string now.Year) }}
+
+<style>
+  :root {
+    --footer-blob-shell-bg: #1a170f;
+    --footer-blob-canvas-bg: #0a0a0a;
+  }
+
+  :root[data-theme="light"] {
+    --footer-blob-shell-bg: #f5f2ea;
+    --footer-blob-canvas-bg: #fafafa;
+  }
+
+  .footer-dock {
+    position: relative;
+    width: 100%;
+    flex-shrink: 0;
+    background: var(--footer-blob-shell-bg);
+    opacity: 0.7;
+  }
+
+  .ascii-blob-footer {
+    width: 100%;
+    margin: 0;
+  }
+
+  .ascii-blob-footer__canvas {
+    display: block;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 6px 0;
+    background: var(--footer-blob-canvas-bg);
+    font-family: monospace;
+    font-size: clamp(6px, 0.95vw, 11px);
+    line-height: 1;
+    letter-spacing: 0;
+    white-space: pre;
+    user-select: none;
+    contain: layout paint;
+  }
+
+  @media (max-width: 684px) {
+    .ascii-blob-footer__canvas {
+      padding: 5px 0;
+    }
+  }
+</style>
+
 <footer class="footer">
   <div class="footer__inner">
     <div class="copyright{{ if $.Site.Copyright }} copyright--user{{ end }}">
@@ -12,6 +60,139 @@
     </div>
   </div>
 </footer>
+
+<div class="footer-dock">
+  <section class="ascii-blob-footer" id="ascii-blob-footer">
+    <pre id="ascii-blob-canvas" class="ascii-blob-footer__canvas" aria-label="Animated ASCII blob pattern"></pre>
+  </section>
+</div>
+
+<script>
+  (function () {
+    var root = document.getElementById('ascii-blob-footer');
+    if (!root) return;
+
+    var canvasEl = root.querySelector('#ascii-blob-canvas');
+    var H = 11;
+    var SCALE = 13;
+    var SPEED = 0;
+    var RAMP = [' ', '.', ':', '+', '*', '#'];
+    var DARK = ['#111111', '#1d1d1d', '#2d2d2d', '#434343', '#676767', '#8a8a8a'];
+    var LIGHT = ['#f7f7f7', '#ececec', '#dcdcdc', '#c2c2c2', '#9b9b9b', '#707070'];
+    var seed = Math.floor(Math.random() * 9999);
+    var t = 0;
+    var cols = 96;
+    var resizeTimer = 0;
+
+    function getPalette() {
+      return document.documentElement.getAttribute('data-theme') === 'light' ? LIGHT : DARK;
+    }
+
+    function measureColumns() {
+      var probe = document.createElement('span');
+      probe.textContent = '#'.repeat(64);
+      probe.style.visibility = 'hidden';
+      probe.style.position = 'absolute';
+      probe.style.whiteSpace = 'pre';
+      canvasEl.appendChild(probe);
+
+      var charWidth = probe.getBoundingClientRect().width / 64;
+      canvasEl.removeChild(probe);
+
+      if (!charWidth) return cols;
+      return Math.max(1, Math.ceil(canvasEl.clientWidth / charWidth));
+    }
+
+    function syncGrid() {
+      cols = measureColumns();
+    }
+
+    function hash(x, y, localSeed) {
+      var h = x * 374761393 + y * 668265263 + localSeed * 982451653;
+      h = (h ^ (h >>> 13)) * 1274126177;
+      h = h ^ (h >>> 16);
+      return ((h >>> 0) % 100000) / 100000;
+    }
+
+    function smooth(v) {
+      return v * v * (3 - 2 * v);
+    }
+
+    function valueNoise(x, y, localSeed) {
+      var xi = Math.floor(x);
+      var yi = Math.floor(y);
+      var xf = x - xi;
+      var yf = y - yi;
+      var tl = hash(xi, yi, localSeed);
+      var tr = hash(xi + 1, yi, localSeed);
+      var bl = hash(xi, yi + 1, localSeed);
+      var br = hash(xi + 1, yi + 1, localSeed);
+      var u = smooth(xf);
+      var v = smooth(yf);
+      var top = tl + (tr - tl) * u;
+      var bot = bl + (br - bl) * u;
+      return top + (bot - top) * v;
+    }
+
+    function fbm(x, y, time, localSeed) {
+      var n = 0;
+      var amp = 1;
+      var freq = 1;
+      var norm = 0;
+
+      for (var i = 0; i < 3; i++) {
+        n += amp * valueNoise(x * freq + time * 0.3, y * freq - time * 0.2, localSeed + i * 17);
+        norm += amp;
+        amp *= 0.55;
+        freq *= 2.1;
+      }
+
+      return n / norm;
+    }
+
+    function render() {
+      var html = '';
+      var rampLen = RAMP.length;
+      var palette = getPalette();
+
+      for (var y = 0; y < H; y++) {
+        var row = '';
+        var curColor = -1;
+
+        for (var x = 0; x < cols; x++) {
+          var nx = x / SCALE;
+          var ny = (y * 2) / SCALE;
+          var v = fbm(nx, ny, t, seed);
+          var biased = Math.pow(v, 0.85);
+          var idx = Math.min(rampLen - 1, Math.max(0, Math.floor(biased * rampLen)));
+
+          if (idx !== curColor) {
+            if (curColor !== -1) row += '</span>';
+            row += '<span style="color:' + palette[idx] + '">';
+            curColor = idx;
+          }
+
+          row += RAMP[idx];
+        }
+
+        if (curColor !== -1) row += '</span>';
+        html += row + (y < H - 1 ? '\n' : '');
+      }
+
+      canvasEl.innerHTML = html;
+      t += 0.0025 + SPEED * 0.01;
+      window.requestAnimationFrame(render);
+    }
+
+    window.addEventListener('resize', function () {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(syncGrid, 60);
+    });
+
+    syncGrid();
+    render();
+  })();
+</script>
 
 {{ $menu := resources.Get "js/menu.js" | js.Build }}
 {{ $cp := resources.Get "js/code.js" | js.Build }}

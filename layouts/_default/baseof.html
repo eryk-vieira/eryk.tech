@@ -15,27 +15,21 @@
 <body>
 {{ $container := cond ($.Site.Params.FullWidthTheme | default false) "container full" (cond ($.Site.Params.CenterTheme | default false) "container center" "container") }}
 
-<div class="{{- $container -}}{{- cond ($.Site.Params.oneHeadingSize | default false) " headings--one-size" "" }}">
+<div class="page-shell">
+  <div class="{{- $container -}}{{- cond ($.Site.Params.oneHeadingSize | default false) " headings--one-size" "" }}">
 
-  {{ partial "header.html" . }}
+    {{ partial "header.html" . }}
 
-  <div class="terminal-path">
-    <span class="terminal-path__user">eryk@tech</span>
-    <span class="terminal-path__sep">:</span>
-    <span class="terminal-path__cwd">~{{ $p := trim .RelPermalink "/" }}{{ with $p }}/{{ . }}{{ end }}</span>
-    <span class="terminal-path__prompt">$</span>
-    <span class="terminal-path__cursor">_</span>
+    <div class="content">
+      {{ block "main" . }}
+      {{ end }}
+    </div>
   </div>
-
-  <div class="content">
-    {{ block "main" . }}
-    {{ end }}
-  </div>
-
-  {{ block "footer" . }}
-    {{ partial "footer.html" . }}
-  {{ end }}
 </div>
+
+{{ block "footer" . }}
+  {{ partial "footer.html" . }}
+{{ end }}
 
 </body>
 </html>

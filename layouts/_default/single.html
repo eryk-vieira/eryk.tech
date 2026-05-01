@@ -1,5 +1,8 @@
 {{ define "main" }}
 {{ $pageData := dict }}
+{{ $showToc := (.Params.Toc | default .Site.Params.Toc) }}
+{{ $tocHtml := .TableOfContents }}
+{{ $hasToc := and $showToc (ne (trim ($tocHtml | plainify) " \n\r\t") "") }}
 {{ with .Params.contentKey }}
   {{ with index $.Site.Data.content.pages . }}
     {{ $pageData = . }}
@@ -35,26 +38,28 @@
   {{ end }}
   {{ partial "cover.html" . }}
 
-  {{ if (.Params.Toc | default .Site.Params.Toc) }}
-    <div class="table-of-contents">
-      <h2>
-        {{ (.Params.TocTitle | default .Site.Params.TocTitle) | default "Table of Contents" }}
-      </h2>
-      {{ .TableOfContents }}
-    </div>
-  {{ end }}
-
-  <div class="post-content">
-    {{ if $pageData.body }}
-      <div>
-        {{ $pageData.body | markdownify }}
-      </div>
-    {{ else }}
-      {{ with .Content }}
-      <div>
-        {{ . | replaceRE "(<h[1-9] id=\"([^\"]+)\".+)(</h[1-9]+>)" `${1}<a href="#${2}" class="hanchor" ariaLabel="Anchor">#</a> ${3}` | safeHTML }}
-      </div>
+  <div class="post-layout{{ if $hasToc }} post-layout--with-toc{{ end }}">
+    <div class="post-content">
+      {{ if $pageData.body }}
+        <div>
+          {{ $pageData.body | markdownify }}
+        </div>
+      {{ else }}
+        {{ with .Content }}
+        <div>
+          {{ . | replaceRE "(<h[1-9] id=\"([^\"]+)\".+)(</h[1-9]+>)" `${1}<a href="#${2}" class="hanchor" ariaLabel="Anchor">#</a> ${3}` | safeHTML }}
+        </div>
+        {{ end }}
       {{ end }}
+    </div>
+
+    {{ if $hasToc }}
+      <aside class="table-of-contents table-of-contents--sidebar">
+        <h2>
+          {{ (.Params.TocTitle | default .Site.Params.TocTitle) | default "Table of Contents" }}
+        </h2>
+        {{ $tocHtml }}
+      </aside>
     {{ end }}
   </div>
 
