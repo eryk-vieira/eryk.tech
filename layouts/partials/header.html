@@ -1,0 +1,28 @@
+{{ $menu := $.Site.Data.content.menu }}
+<header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      {{ partial "logo.html" . }}
+    </div>
+    {{ if gt (len $menu) 0 }}
+      {{ partial "mobile-menu.html" . }}
+    {{ end }}
+    {{ if and $.Site.Params.showLanguageSelector (len $.Site.Home.AllTranslations) }}
+      {{ partial "language-menu.html" . }}
+    {{ end }}
+    <button class="theme-toggle" type="button" onclick="(function(){var c=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',c);localStorage.setItem('theme',c);document.querySelectorAll('.theme-toggle .opt').forEach(function(el){el.classList.toggle('active',el.dataset.theme===c);});})()">
+      [<span class="opt" data-theme="light">light</span>]/[<span class="opt" data-theme="dark">dark</span>]
+    </button>
+  </div>
+  <script>
+    (function(){
+      var c = document.documentElement.getAttribute('data-theme') || 'dark';
+      document.querySelectorAll('.theme-toggle .opt').forEach(function(el){
+        if (el.dataset.theme === c) el.classList.add('active');
+      });
+    })();
+  </script>
+  {{ if gt (len $menu) 0 }}
+    {{ partial "menu.html" . }}
+  {{ end }}
+</header>

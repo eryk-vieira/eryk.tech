@@ -1,0 +1,28 @@
+{{ $menu := $.Site.Data.content.menu }}
+<nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    {{ if or $.Site.Params.showMenuItems (eq .Site.Params.showMenuItems 0) }}
+      {{ range first $.Site.Params.showMenuItems $menu }}
+        <li><a href="{{ .url }}">{{ .name }}</a></li>
+      {{ end }}
+      {{ if gt (len $menu) $.Site.Params.showMenuItems }}
+        <li>
+          <ul class="menu">
+            <li class="menu__trigger">{{ $.Site.Params.menuMore }}&nbsp;▾</li>
+            <li>
+              <ul class="menu__dropdown">
+                {{ range last (sub (len $menu) $.Site.Params.showMenuItems) $menu }}
+                  <li><a href="{{ .url }}">{{ .name }}</a></li>
+                {{ end }}
+              </ul>
+            </li>
+          </ul>
+        </li>
+      {{ end }}
+    {{ else }}
+      {{ range $menu }}
+        <li><a href="{{ .url }}">{{ .name }}</a></li>
+      {{ end }}
+    {{ end }}
+  </ul>
+</nav>

@@ -1,0 +1,39 @@
+baseURL = 'https://eryk-vieira.github.io/eryk.tech/'
+locale = 'en-us'
+title = 'Eryk Tech'
+theme = 'terminal'
+pagination.pagerSize = 5
+
+defaultContentLanguage = 'pt-br'
+defaultContentLanguageInSubdir = false
+removePathAccents = true
+
+[languages]
+  [languages.pt-br]
+    languageName = 'PT-BR'
+    weight = 1
+    title = 'Eryk Tech'
+  [languages.en]
+    languageName = 'EN'
+    weight = 2
+    title = 'Eryk Tech'
+
+[permalinks]
+  posts = "/:year/:month/:day/:slug/"
+
+[params]
+  CenterTheme = true
+  ReadMore = "read more"
+  showLanguageSelector = true
+
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = '0.90.0'
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true
+
+  [markup.highlight]
+    noClasses = false

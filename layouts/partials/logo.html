@@ -1,0 +1,6 @@
+{{ $siteData := $.Site.Data.content.site }}
+<a href="{{ if $.Site.Params.Logo.LogoHomeLink }}{{ $.Site.Params.Logo.LogoHomeLink }}{{ else }}{{ $.Site.BaseURL }}{{ end }}">
+  <div class="logo">
+    {{ or $siteData.logoText $.Site.Title }}
+  </div>
+</a>

@@ -1,0 +1,13 @@
+site:
+  subtitle: Eryk Tech is a simple space for writing, experiments, and shipped work.
+  logoText: Eryk Tech
+  footer:
+    copyright: © {year} Eryk Tech
+    builtWithText: Hugo
+    builtWithUrl: https://gohugo.io
+
+menu: []
+
+home: {}
+
+pages: {}

@@ -1,0 +1,27 @@
+<ul class="menu menu--desktop menu--language-selector">
+  <li class="menu__trigger">{{ .Language.LanguageName }}&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      {{ range $.Site.Languages }}
+        {{ if ne .Lang $.Language.Lang }}
+          {{ $lang := . }}
+          {{ $target := "" }}
+          {{ range $.Translations }}
+            {{ if eq .Language.Lang $lang.Lang }}
+              {{ $target = .Permalink }}
+            {{ end }}
+          {{ end }}
+          {{ if not $target }}
+            {{ with where $.Site.Home.AllTranslations "Language.Lang" $lang.Lang }}
+              {{ $target = (index . 0).Permalink }}
+            {{ end }}
+          {{ end }}
+          {{ if not $target }}
+            {{ $target = $.Site.Home.Permalink }}
+          {{ end }}
+          <li><a href="{{ $target }}">{{ $lang.LanguageName }}</a></li>
+        {{ end }}
+      {{ end }}
+    </ul>
+  </li>
+</ul>
