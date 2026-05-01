@@ -42,8 +42,29 @@
 
   @media (max-width: 684px) {
     .header-blob {
+      width: calc(100% + 40px);
       margin-top: -20px;
+      margin-left: -20px;
+      margin-right: -20px;
       margin-bottom: 0.75rem;
+    }
+
+    .header__inner {
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .header__logo {
+      min-width: 0;
+    }
+
+    .theme-toggle {
+      margin-left: 0;
+      padding: 5px 0;
+      font-size: 0.9rem;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
 
     .header {
